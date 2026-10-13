@@ -1,18 +1,33 @@
-# check yaml syntax right or wrong
+# Docker Compose + Jaeger
+
+## Check YAML syntax
+
 docker compose -f docker-compose-jaeger.yaml config
+
+If there is no error, start all containers:
 
 docker compose -f docker-compose-jaeger.yaml up -d
 
-# check running conta[text](docker-compose.yml)iners
+## Check running containers
+
 docker compose -f docker-compose-jaeger.yaml ps
 
-# first open fake-service UI and request generate - chrome
+## Open Fake Service UI
+
+Open in browser:
+
 http://localhost:9999/ui
 
-# click GO 2 or 3 times
+Click Go 2 - 3 times to generate requests and traces.
 
-# Jaeger
+## Open Jaeger UI
+
+Open in browser:
+
 http://localhost:16686
 
-# to stop everything later
+Select Product Page, then click Find Tracesto view the service trace.
+
+## Stop the lab
+
 docker compose -f docker-compose-jaeger.yaml down
