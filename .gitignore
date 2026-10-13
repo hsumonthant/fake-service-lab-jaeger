@@ -1,0 +1,19 @@
+# Secrets
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+.env
+*.env
+*accessKeys*.csv
+
+# Large local binary
+fake-service
+
+# OS / editor
+.DS_Store
+.vscode/
+
+# Logs
+*.log

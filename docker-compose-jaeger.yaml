@@ -1,0 +1,86 @@
+services:
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.76.0
+    environment:
+      COLLECTOR_ZIPKIN_HOST_PORT: ":9411"
+    ports:
+      - "16686:16686"
+      - "9411:9411"
+
+  productpage:
+    image: nicholasjackson/fake-service:v0.23.1
+    environment:
+      LISTEN_ADDR: 0.0.0.0:9090
+      UPSTREAM_URIS: "http://reviews-v1:9090,http://reviews-v2:9090,http://reviews-v3:9090,http://details:9090"
+      MESSAGE: "Product Page"
+      NAME: "Product Page"
+      SERVER_TYPE: "http"
+      TRACING_ZIPKIN: "http://jaeger:9411/api/v2/spans"
+    ports:
+      - "9999:9090"
+    depends_on:
+      - reviews-v1
+      - reviews-v2
+      - reviews-v3
+      - details
+      - jaeger
+
+  reviews-v1:
+    image: nicholasjackson/fake-service:v0.23.1
+    environment:
+      LISTEN_ADDR: 0.0.0.0:9090
+      UPSTREAM_URIS: "http://rating:9090"
+      MESSAGE: "Reviews V1 response"
+      NAME: "Reviews V1"
+      SERVER_TYPE: "http"
+      TRACING_ZIPKIN: "http://jaeger:9411/api/v2/spans"
+    depends_on:
+      - rating
+      - jaeger
+
+  reviews-v2:
+    image: nicholasjackson/fake-service:v0.23.1
+    environment:
+      LISTEN_ADDR: 0.0.0.0:9090
+      MESSAGE: "Reviews V2 response"
+      NAME: "Reviews V2"
+      SERVER_TYPE: "http"
+      TRACING_ZIPKIN: "http://jaeger:9411/api/v2/spans"
+    depends_on:
+      - jaeger
+
+  reviews-v3:
+    image: nicholasjackson/fake-service:v0.23.1
+    environment:
+      LISTEN_ADDR: 0.0.0.0:9090
+      UPSTREAM_URIS: "http://rating:9090"
+      MESSAGE: "Reviews V3 response"
+      NAME: "Reviews V3"
+      SERVER_TYPE: "http"
+      TRACING_ZIPKIN: "http://jaeger:9411/api/v2/spans"
+    depends_on:
+      - rating
+      - jaeger
+
+  details:
+    image: nicholasjackson/fake-service:v0.23.1
+    environment:
+      LISTEN_ADDR: 0.0.0.0:9090
+      MESSAGE: "Details response"
+      NAME: "Details"
+      SERVER_TYPE: "http"
+      TRACING_ZIPKIN: "http://jaeger:9411/api/v2/spans"
+    depends_on:
+      - jaeger
+
+  rating:
+    image: nicholasjackson/fake-service:v0.23.1
+    environment:
+      LISTEN_ADDR: 0.0.0.0:9090
+      MESSAGE: "Rating response"
+      NAME: "Rating"
+      SERVER_TYPE: "http"
+      TRACING_ZIPKIN: "http://jaeger:9411/api/v2/spans"
+    depends_on:
+      - jaeger
